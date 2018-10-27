@@ -4,9 +4,9 @@ import sys
 
 filename = sys.argv[1]
 kmer_length = int(sys.argv[2])
-FILE = open(filename, 'r')
 
 def kmer_count(filename, kmer_length):
+   FILE = open(filename, 'r')
    if kmer_length % 2 == 0: raise ValueError('Kmer length cannot be an even number')
    kmers = {}
    for line in FILE:
