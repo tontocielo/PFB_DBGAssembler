@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-#from scipy.signal import argrelmin
-import numpy as np
 import sys
 import matplotlib.pyplot as plt
+import numpy as np
+import statistics as st
 
 filename = sys.argv[1]
 kmer_length = int(sys.argv[2])
@@ -28,43 +28,49 @@ def kmer_count(filename, kmer_length):
    return(kmers)
 
 kmers = kmer_count(filename, kmer_length)
+#Kmers original dictionary
 
-kmers_sorted = sorted(kmers.items(), key = lambda x: x[1])
+kmer_count_list = []
+for kmer in kmers:
+	kmer_count_list.append(kmers[kmer])
+kmer_count_list = sorted(kmer_count_list)
+#List of all of the counts of how many times kmers appear in parent dictionary
+
+kmer_count_abundance = {}
+for i in range(min(kmer_count_list), max(kmer_count_list)+1):
+	tempcount = kmer_count_list.count(i)
+	kmer_count_abundance[i] = tempcount
+#Create a dictionary of all of the kmer appearance counts as keys and their abundances as the values
+
+min_kmer_abun = max(kmer_count_abundance.values())*100
+for key, value in sorted(kmer_count_abundance.items(), key = lambda x: x[0]):
+	if value < min_kmer_abun:
+		min_kmer_abun = value
+	else:
+		first_infl_point = key-1
+		print(first_infl_point)
+		break
+#Find the first inflection point in the histogram and store it as 'cutoff' in order to create the normal distribution
+
+freq_list_normaldist = []
+for key, value in sorted(kmers.items(), key = lambda x: x[0]):
+	if value >= first_infl_point:
+		freq_list_normaldist.append(value)
+#Create the frequency list using the new inflection point and then find the 95% CI of the distribution
+				
+normal_dist_mean = sum(freq_list_normaldist)/len(freq_list_normaldist)
+normal_dist_std = st.stdev(freq_list_normaldist)
+bound1_key = int(normal_dist_mean - (2*normal_dist_std))
+bound2_key = int(normal_dist_mean + (2*normal_dist_std)) 
+#Found the mean and standard deviations of the adjusted distribution and used them to find te 95% confidence interval
 
 dist_kmer = []
 for kmer in kmers:
-	if kmers[kmer] > 5:
+	if kmers[kmer] > bound1_key and kmers[kmer] < bound2_key:
 		dist_kmer.append(kmers[kmer])	
+#Create a new dictionary of only kmers within the 95% CI of the adjusted distribution
 
-kmer_list = []
-for kmer in kmers:
-	kmer_list.append(kmers[kmer])
-kmer_list = sorted(kmer_list)
-kmer_count = {}
-
-for i in range(min(kmer_list), max(kmer_list)+1):
-	tempcount = kmer_list.count(i)
-	kmer_count[i] = tempcount
-
-minkmer = max(kmer_count.values())*100
-for key, value in sorted(kmer_count.items(), key = lambda x: x[0]):
-#for i in range(1, max(kmer_count.keys())):
-	print(key, value, minkmer)
-	if value < minkmer:
-		minkmer = value
-	else:
-		print(key-1)
-		break
-
-print(kmer_count)
-
-#plt.hist(kmers.values())
-#plt.plot()
-#plt.savefig('graphforreals.png')
-plt.hist(dist_kmer)
-#plt.xlim([0,45])
-#plt.ylim([0, 100000])
+plt.hist(dist_kmer, bins = (bound2_key - bound1_key-1))
 plt.plot()
 plt.savefig('graphrealfreqy.png')
-#print(sum(kmers.values())/len(kmers))
-
+#Plot the new dictionary with adjusted bin size
