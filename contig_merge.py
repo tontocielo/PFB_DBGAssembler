@@ -17,7 +17,7 @@ import numpy as np
 #--------------- Get options from the command line------------------------
 inputfile = ''
 kmer_length = 31
-cutoff = 0
+cutoff = -1
 report = ''
 outfile = ''
 opts, argv = getopt.getopt(sys.argv[1:], 'hi:k:c:o:r:', ['help','ifile','kmer', 'cutoff', 'output', 'report'])
@@ -118,7 +118,8 @@ print(bound1_key,bound2_key)
 
 
 # remove low frequency kmers
-cutoff = bound1_key
+if cutoff < 0: cutoff = bound1_key
+
 kmers_dict = {key:val for key, val in kmers_dict.items() if val >= cutoff}
 print(len(kmers_dict), 'kmers left in the dictionary after removing low frequency kmers')
 if report != '': REPORT.write(str(len(kmers_dict)) + '\t' + 'kmers left in the dictionary after removing low frequency kmers' + '\n')
