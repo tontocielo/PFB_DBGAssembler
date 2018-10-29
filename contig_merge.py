@@ -190,20 +190,27 @@ contigs = sorted(contigs, key = len, reverse = True)
 print(len(contigs))
 # Calculate quick statistics for contig assebmly
 #assembly_size
-genome_size = 50000
+assembly_size = 0
+for i in range(len(contigs)): assembly_size += len(contigs[i])
+
 counter = 0
 n50 = 0
 l50 = 0
 for i in range(len(contigs)):
   counter += len(contigs[i])
-  if counter >= genome_size / 2:
+  if counter >= assembly_size / 2:
      n50 = len(contigs[i])
      l50 = i + 1
      break
 print('N50', n50)
 print('L50', l50)
+
 if report != '' : REPORT.write('N50:' + '\t' + str(n50) + '\n') # Write stats to the report
 if report != '' : REPORT.write('L50:' + '\t' + str(l50) + '\n')
+if report != '' : REPORT.write(str(kmer_length) + '\t' + str(assembly_size) + '\n')
+if report != '' : REPORT.write(str(kmer_length) + '\t' + str(len(contigs)) + '\n')
+if report != '' : REPORT.write(str(cutoff) + '\t' + str(assembly_size) + '\n')
+if report != '' : REPORT.write(str(cutoff) + '\t' + str(len(contigs)) + '\n')
 
 for i in range(len(contigs)):
   print('>contig' + str(i) + '\t' + 'length: ' + str(len(contigs[i])))
@@ -212,8 +219,13 @@ for i in range(len(contigs)):
   if outfile != '' : ASSEMBLY.write('>contig' + str(i) + '\n')  # Write contigs to the file, wrap line if they are longer than 100 nt
   if outfile != '' : ASSEMBLY.write(record + '\n')          #
 
+#kmers_assembly = open('kmers_assembly','a')
 
+#kmers_assembly = open('kmers_assembly','a')
 
+#kmers_assembly = open('kmers_assembly','a')
+
+#kmers_assembly = open('kmers_assembly','a')
 
 
 
