@@ -1,0 +1,8 @@
+84250896	kmers gathered in the dictionary
+5574598	kmers left in the dictionary after removing low frequency kmers
+N50:	806
+L50:	1111
+35	3335141
+35	16113
+5	3335141
+5	16113

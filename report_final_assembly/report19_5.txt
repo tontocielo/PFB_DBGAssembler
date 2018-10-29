@@ -1,0 +1,8 @@
+84677176	kmers gathered in the dictionary
+5793488	kmers left in the dictionary after removing low frequency kmers
+N50:	1003
+L50:	941
+19	3229024
+19	18460
+5	3229024
+5	18460

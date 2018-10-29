@@ -1,0 +1,8 @@
+85698002	kmers gathered in the dictionary
+5613284	kmers left in the dictionary after removing low frequency kmers
+N50:	1027
+L50:	837
+21	3132822
+21	16309
+7	3132822
+7	16309

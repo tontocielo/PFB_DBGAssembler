@@ -1,0 +1,8 @@
+80971556	kmers gathered in the dictionary
+5618852	kmers left in the dictionary after removing low frequency kmers
+N50:	769
+L50:	1204
+41	3469786
+41	16509
+4	3469786
+4	16509

@@ -1,0 +1,8 @@
+86189028	kmers gathered in the dictionary
+5560502	kmers left in the dictionary after removing low frequency kmers
+N50:	863
+L50:	1012
+29	3236819
+29	16306
+6	3236819
+6	16306

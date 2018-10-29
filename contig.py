@@ -140,7 +140,7 @@ for kmer in kmers_dict:
      contigs.append(contig)
          
 contigs = sorted(contigs, key = len, reverse = True)
-
+print(len(contigs))
 # Calculate quick statistics for contig assebmly
 #assembly_size
 genome_size = 50000
