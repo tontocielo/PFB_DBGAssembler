@@ -74,40 +74,46 @@ kmers_dict = kmer_count(inputfile, kmer_length)
 print(len(kmers_dict), 'kmers gathered in the dictionary')
 if report != '': REPORT.write(str(len(kmers_dict)) + '\t' + 'kmers gathered in the dictionary' + '\n')
 #########################################################################################
-kmer_count_list = []
-for kmer in kmers_dict:
-	kmer_count_list.append(kmers_dict[kmer])
-kmer_count_list = sorted(kmer_count_list)
-#List of all of the counts of how many times kmers appear in parent dictionary
+def inflection(kmers_dict):
+   kmer_count_list = []
+   for kmer in kmers_dict:  kmer_count_list.append(kmers_dict[kmer])
+   kmer_count_list = sorted(kmer_count_list)
+   print('kmer_count_list populated')
+   #List of all of the counts of how many times kmers appear in parent dictionary
 
-kmer_count_abundance = {}
-for i in range(min(kmer_count_list), max(kmer_count_list)+1):
-	tempcount = kmer_count_list.count(i)
-	kmer_count_abundance[i] = tempcount
-#Create a dictionary of all of the kmer appearance counts as keys and their abundances as the values
+   kmer_count_abundance = {}
+   for i in range(min(kmer_count_list), max(kmer_count_list)+1):
+     tempcount = kmer_count_list.count(i)
+     kmer_count_abundance[i] = tempcount
+   print('kmer_count_abunfance populated')
+   #Create a dictionary of all of the kmer appearance counts as keys and their abundances as the values
 
-min_kmer_abun = max(kmer_count_abundance.values())*100
-for key, value in sorted(kmer_count_abundance.items(), key = lambda x: x[0]):
-	if value < min_kmer_abun:
-		min_kmer_abun = value
-	else:
-		first_infl_point = key-1
-		print(first_infl_point)
-		break
+   min_kmer_abun = max(kmer_count_abundance.values())*100
+   for key, value in sorted(kmer_count_abundance.items(), key = lambda x: x[0]):
+        if value < min_kmer_abun:
+           min_kmer_abun = value
+        else:
+           first_infl_point = key-1
+           print(first_infl_point)
+           break
+   return first_infl_point
+
 #Find the first inflection point in the histogram and store it as 'cutoff' in order to create the normal distribution
-
-freq_list_normaldist = []
-for key, value in sorted(kmers_dict.items(), key = lambda x: x[0]):
-	if value >= first_infl_point:
-		freq_list_normaldist.append(value)
-#Create the frequency list using the new inflection point and then find the 95% CI of the distribution
+if cutoff < 0:
+   first_infl_point = inflection(kmers_dict)
+   freq_list_normaldist = []
+   for key, value in sorted(kmers_dict.items(), key = lambda x: x[0]):
+     if value >= first_infl_point:
+        freq_list_normaldist.append(value)
+   #Create the frequency list using the new inflection point and then find the 95% CI of the distribution
 				
-normal_dist_mean = sum(freq_list_normaldist)/len(freq_list_normaldist)
-normal_dist_std = st.stdev(freq_list_normaldist)
-bound1_key = int(normal_dist_mean - (3*normal_dist_std))
-bound2_key = int(normal_dist_mean + (3*normal_dist_std))
-print(bound1_key,bound2_key)
-#Found the mean and standard deviations of the adjusted distribution and used them to find te 95% confidence interval
+   normal_dist_mean = sum(freq_list_normaldist)/len(freq_list_normaldist)
+   normal_dist_std = st.stdev(freq_list_normaldist)
+   bound1_key = int(normal_dist_mean - (3*normal_dist_std))
+   bound2_key = int(normal_dist_mean + (3*normal_dist_std))
+   print(bound1_key,bound2_key)
+   cutoff = bound1_key
+   #Found the mean and standard deviations of the adjusted distribution and used them to find te 95% confidence interval
 
 #dist_kmer = []
 #for kmer in kmers:
@@ -118,8 +124,6 @@ print(bound1_key,bound2_key)
 
 
 # remove low frequency kmers
-if cutoff < 0: cutoff = bound1_key
-
 kmers_dict = {key:val for key, val in kmers_dict.items() if val >= cutoff}
 print(len(kmers_dict), 'kmers left in the dictionary after removing low frequency kmers')
 if report != '': REPORT.write(str(len(kmers_dict)) + '\t' + 'kmers left in the dictionary after removing low frequency kmers' + '\n')
